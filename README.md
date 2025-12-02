@@ -2,6 +2,7 @@
 
 ## Home Page
 <img width="1280" height="614" alt="Screenshot 2025-12-03 010303" src="https://github.com/user-attachments/assets/7d5be16d-43ef-4ed0-a2d3-9d93c3fbe1de" />
+
 ## Encryption and Compressing Phase
 <img width="1209" height="507" alt="Screenshot 2025-12-03 005549" src="https://github.com/user-attachments/assets/2f351dcf-af1b-4824-ac2c-283c86cc3f36" />
 
