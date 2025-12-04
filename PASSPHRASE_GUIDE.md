@@ -23,23 +23,6 @@ A composite passphrase combines three different character types into a single 12
 | Special | `!@#$` | 4 | Special (!@#$%^&*...) |
 | **Total** | `abcd1234!@#$` | **12** | **Mixed** |
 
-## Why Three Separate Parts?
-
-### Security Benefits
-
-1. **Increased Entropy**: Requires attacker to guess from three different character sets
-2. **Prevents Dictionary Attacks**: Can't use simple word lists
-3. **User-Friendly**: Each part is only 4 characters (easy to remember)
-4. **Enforces Complexity**: Guarantees mix of character types
-
-### Entropy Comparison
-
-**Single 12-character passphrase** (any character):
-- Possible combinations: 95^12 ≈ 475 quadrillion
-
-**Composite 12-character passphrase** (3 parts):
-- Possible combinations: 26^4 × 10^4 × 32^4 ≈ 4.7 quintillion
-- **475× more secure** than single character set
 
 ## How to Create a Strong Passphrase
 
@@ -201,22 +184,6 @@ The application has three separate input fields:
 
 **Important**: The passphrase MUST match exactly (case-sensitive for letters)
 
-## Passphrase Security
-
-### What Makes a Passphrase Secure?
-
-✅ **Secure Passphrases**:
-- Random characters from all three types
-- No personal information
-- No keyboard patterns
-- Different from other passphrases
-- 12 characters total
-
-❌ **Weak Passphrases**:
-- Sequential: `abcd1234!@#$` (predictable)
-- Personal: `john1990!@#$` (uses name/birthdate)
-- Repeated: `aaaa1111####` (not random)
-- Simple: `test1234!@#$` (common word)
 
 ### Security Levels
 
@@ -229,32 +196,6 @@ The application has three separate input fields:
 
 *Note: Time estimates assume 100,000 PBKDF2 iterations and modern hardware*
 
-## Remembering Your Passphrase
-
-### Option 1: Memory Techniques
-
-- **Acronym**: Create a phrase, use first letters
-  - Phrase: "Keep Xeriscape Mowing Quarterly, 7392 times, with *&%! passion"
-  - Passphrase: `kxmq7392*&%!`
-
-- **Story**: Create a memorable story with the characters
-  - Story: "kxmq were 7392 friends who used *&%! symbols"
-  - Passphrase: `kxmq7392*&%!`
-
-### Option 2: Password Manager
-
-Use a password manager to securely store your passphrase:
-- **Recommended**: Bitwarden, 1Password, KeePass
-- **Benefits**: Secure storage, auto-fill, encrypted backup
-- **Setup**: Store with description "VoxCrypt"
-
-### Option 3: Secure Written Record
-
-If you write it down:
-- Use a secure location (safe, locked drawer)
-- Don't store on your computer
-- Don't share with others
-- Consider splitting it (store parts separately)
 
 ## What Happens If You Forget?
 
