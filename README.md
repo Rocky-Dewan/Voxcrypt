@@ -3,11 +3,10 @@
 A secure, client-side web application for encrypting audio and video files into standard image files, and recovering the original media from those images using a 12-character composite passphrase. All cryptographic operations execute entirely within the browser. No data is ever transmitted to a server.
 
 ## Home Page
-<img width="1280" height="614" alt="Screenshot 2025-12-03 010303" src="https://github.com/user-attachments/assets/7d5be16d-43ef-4ed0-a2d3-9d93c3fbe1de" />
+<img width="1690" height="1228" alt="image" src="https://github.com/user-attachments/assets/50cf6f5b-e7e5-4b4a-8392-be3e59bbae20" />
 
-## Encryption and Compressing Phase
-<img width="1209" height="507" alt="Screenshot 2025-12-03 005549" src="https://github.com/user-attachments/assets/2f351dcf-af1b-4824-ac2c-283c86cc3f36" />
-
+## Encryption and Decryption both Phase
+<img width="1634" height="1234" alt="image" src="https://github.com/user-attachments/assets/9682350f-b88d-4be2-8da2-1eecf2454d63" />
 
 
 ---
