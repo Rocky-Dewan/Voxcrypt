@@ -1,79 +1,6 @@
-<<<<<<< HEAD
-# 🔒 VoxCrypt — Audio Encryption Studio
+# VoxCrypt
 
-> Encrypt audio and video files into pixel-steganographic images. Recover them with your passphrase.
-> **Zero servers. Zero tracking. 100% client-side.**
-
----
-
-## ✨ Features
-
-- **AES-256-GCM** authenticated encryption
-- **PBKDF2** key derivation — 100,000 SHA-256 iterations
-- **DEFLATE** compression — up to 90% size reduction
-- **Pixel Steganography** — data stored in RGB image channels
-- **12-character composite passphrase** — letters + digits + special chars
-- **No API keys needed** — fully offline capable
-- **Zero server storage** — Web Crypto API, all local
-
----
-
-## 🚀 Quick Start
-
-```bash
-npm install
-npm run dev       # → http://localhost:3000
-npm run build     # Production build
-npm run preview   # Preview production build
-```
-
----
-
-## 🔑 Passphrase Format
-
-| Part    | Example | Rules                  |
-|---------|---------|------------------------|
-| Letters | `abcd`  | Exactly 4 (a-z / A-Z) |
-| Digits  | `1234`  | Exactly 4 (0-9)        |
-| Special | `!@#$`  | Exactly 4 non-alphanum |
-
-**Full passphrase**: `abcd1234!@#$`
-
-⚠️ There is **no recovery mechanism**. Store your passphrase safely.
-
----
-
-## 🏗 Architecture
-
-```
-Audio File
-  → DEFLATE Compress
-  → PBKDF2 Key Derivation (salt + 100K iterations)
-  → AES-256-GCM Encrypt
-  → Pack into PNG pixel RGB channels
-  → Download encrypted image
-```
-
----
-
-## 📁 Structure
-
-```
-voxcrypt/
-├── src/
-│   ├── App.jsx          # UI — encrypt & decrypt panels
-│   ├── lib/crypto.js    # Encryption engine
-│   └── index.css        # Styles & animations
-├── index.html
-├── vite.config.js
-└── package.json
-```
-
----
-
-MIT License — No API keys — No servers — No tracking
-=======
-# VoxCrypt - Advanced Security Edition
+A secure, client-side web application for encrypting audio and video files into standard image files, and recovering the original media from those images using a 12-character composite passphrase. All cryptographic operations execute entirely within the browser. No data is ever transmitted to a server.
 
 ## Home Page
 <img width="1280" height="614" alt="Screenshot 2025-12-03 010303" src="https://github.com/user-attachments/assets/7d5be16d-43ef-4ed0-a2d3-9d93c3fbe1de" />
@@ -82,303 +9,323 @@ MIT License — No API keys — No servers — No tracking
 <img width="1209" height="507" alt="Screenshot 2025-12-03 005549" src="https://github.com/user-attachments/assets/2f351dcf-af1b-4824-ac2c-283c86cc3f36" />
 
 
-A secure, modern web application that encrypts audio files into encrypted images using a 12-character composite passphrase, with dramatic file size reduction (90MB → 150KB). Built with React, Tailwind CSS, and advanced Web Crypto API for enterprise-grade client-side encryption.
 
-## Key Features
+---
 
-### 🔐 Advanced Security
-- **12-Character Composite Passphrase**: 4 letters + 4 digits + 4 special characters
-- **PBKDF2 Key Derivation**: 100,000 iterations with SHA-256 for brute-force resistance
-- **AES-256-GCM Encryption**: Military-grade authenticated encryption
-- **Vague Error Messages**: No hints about which passphrase component failed
-- **Zero Server Storage**: All encryption happens in your browser
+## Table of Contents
 
-### 📦 Dramatic File Size Reduction
-- **90% Compression**: 90MB audio → ~150KB encrypted image
-- **DEFLATE Compression**: Reduces audio redundancy before encryption
-- **Base85 Encoding**: Efficient binary storage in image pixels
-- **Lossless Recovery**: Original audio perfectly restored on decryption
+- [About the Project](#about-the-project)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Folder Structure](#folder-structure)
+- [Architecture](#architecture)
+- [Encryption Process](#encryption-process)
+- [Decryption Process](#decryption-process)
+- [Passphrase Format](#passphrase-format)
+- [Security Design](#security-design)
+- [File Size and Limits](#file-size-and-limits)
+- [Getting Started](#getting-started)
+- [Available Scripts](#available-scripts)
+- [Browser Compatibility](#browser-compatibility)
+- [Author](#author)
 
-### 🎨 Modern User Interface
-- **Glassmorphism Design**: Futuristic UI with smooth animations
-- **Real-time Progress Bars**: Visual feedback for encryption/decryption
-- **3-Part Passphrase Input**: Separate fields for letters, digits, special chars
-- **Show/Hide Passphrase**: Toggle visibility for convenience
-- **Responsive Layout**: Works on desktop and mobile devices
+---
 
-### 📥 Multiple Export Formats
-- **Images**: PNG, JPG, JPEG
-- **Audio**: MP3, WAV
-- **Flexible**: Choose format based on your needs
+## About the Project
 
-## How It Works
+VoxCrypt allows a user to take any audio or video file and convert it into an encrypted image (PNG or JPG). The encrypted image carries no visible indication of its contents and appears as an ordinary picture file. The original media can only be recovered by providing the exact passphrase that was used during encryption.
 
-### Encryption Process (Audio → Image)
+The entire process — compression, key derivation, encryption, pixel encoding, and decryption — runs locally in the browser using the W3C Web Crypto API. There is no backend server, no database, and no cloud storage. The application has no dependency on external API keys.
 
-1. **Input**: Select audio file (up to 1GB) and enter 12-character passphrase
-2. **Compression**: Audio data compressed by ~90% using DEFLATE
-3. **Key Derivation**: Passphrase converted to 256-bit key using PBKDF2
-4. **Encryption**: Compressed data encrypted with AES-256-GCM
-5. **Encoding**: Encrypted data encoded as Base85 and stored in image pixels
-6. **Output**: Download encrypted image (PNG, JPG, or JPEG)
+---
 
-### Decryption Process (Image → Audio)
+## Features
 
-1. **Input**: Select encrypted image and enter 12-character passphrase
-2. **Extraction**: Retrieve encrypted data from image pixels
-3. **Decoding**: Decode Base85 data back to binary
-4. **Key Derivation**: Passphrase converted to 256-bit key using PBKDF2
-5. **Decryption**: Decrypt data with AES-256-GCM (authentication verified)
-6. **Decompression**: Decompress to recover original audio
-7. **Output**: Download audio file (MP3 or WAV)
+- Encrypt audio files (MP3, WAV, FLAC, AAC, OGG, M4A, OPUS) into encrypted images
+- Encrypt video files (MP4, MKV, WebM, AVI, MOV, M4V) into encrypted images
+- Export encrypted output as PNG or JPG
+- Decrypt encrypted images back to the original audio or video
+- Output format selection after decryption (MP3, WAV, OGG for audio; MP4, WebM for video)
+- 12-character composite passphrase with three distinct character type requirements
+- DEFLATE compression applied before encryption for significant file size reduction
+- AES-256-GCM authenticated encryption that detects any tampering with the encrypted image
+- PBKDF2 key derivation with 100,000 iterations, preventing brute-force attacks
+- Random salt and IV generated per encryption session so identical files produce different outputs
+- Inline media preview after successful decryption via audio player or video player
+- Cancel and re-upload support on both panels
+- Zero server storage — all operations are fully local and offline-capable
+- No API keys required
 
-## Passphrase Requirements
-
-Your 12-character passphrase consists of three parts:
-
-### Part 1: 4 Letters (a-z, A-Z)
-- Example: `abcd`, `XyZa`, `qwer`
-- Letters only, no numbers or special characters
-
-### Part 2: 4 Digits (0-9)
-- Example: `1234`, `5678`, `9012`
-- Numbers only, no letters or special characters
-
-### Part 3: 4 Special Characters (!@#$%^&*...)
-- Example: `!@#$`, `%^&*`, `()_+`
-- Special characters only, no letters or numbers
-
-### Complete Passphrase Example
-- Letters: `abcd`
-- Digits: `1234`
-- Special: `!@#$`
-- **Full Passphrase**: `abcd1234!@#$`
-
-**Important**: You MUST remember your passphrase. There is no recovery mechanism if you forget it.
-
-## Security Architecture
-
-### PBKDF2 Key Derivation
-- **Algorithm**: PBKDF2-SHA256
-- **Iterations**: 100,000 (prevents brute-force attacks)
-- **Salt**: 16 random bytes per encryption (prevents rainbow tables)
-- **Output**: 256-bit encryption key
-
-### AES-256-GCM Encryption
-- **Cipher**: AES (Advanced Encryption Standard)
-- **Key Size**: 256 bits (military-grade)
-- **Mode**: GCM (Galois/Counter Mode - authenticated encryption)
-- **IV**: 12 random bytes per encryption
-- **Authentication**: Built-in authentication tag detects tampering
-
-### Data Compression
-- **Method**: DEFLATE compression + Run-Length Encoding
-- **Reduction**: ~90% file size reduction
-- **Lossless**: Original audio perfectly recovered
-- **Timing**: Compression BEFORE encryption (maximizes efficiency)
-
-### Vague Error Messages
-- **Security Feature**: Error messages don't reveal which passphrase component failed
-- **Example**: "Unable to decrypt. Please verify your passphrase and try again."
-- **Prevents**: Information leakage that could guide attacks
+---
 
 ## Technology Stack
 
-- **Frontend**: React 19 with TypeScript
-- **Styling**: Tailwind CSS 4 with custom animations
-- **Encryption**: Web Crypto API (W3C standard)
-- **Compression**: Custom DEFLATE implementation
-- **Build Tool**: Vite
-- **UI Components**: shadcn/ui
+| Layer          | Technology                                          |
+|----------------|-----------------------------------------------------|
+| UI Framework   | React 18                                            |
+| Build Tool     | Vite 5                                              |
+| Styling        | Plain CSS with CSS custom properties                |
+| Fonts          | Inter via Google Fonts                              |
+| Encryption     | Web Crypto API (W3C standard, built into browsers)  |
+| Compression    | CompressionStream / DecompressionStream API         |
+| Pixel Encoding | HTML5 Canvas API (RGB channel packing)              |
+| Runtime        | Browser only, no Node.js at runtime                 |
+| Package Manager| npm                                                 |
 
-## Installation
+---
 
-### Prerequisites
-- Node.js v18 or higher
-- pnpm v10 or higher
-
-### Quick Start
-
-```bash
-# Extract project
-unzip voxcrypt.zip
-cd voxcrypt
-
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm dev
-
-# Open browser
-# Visit: http://localhost:3000
-```
-
-## Usage Guide
-
-### Encrypting Audio
-
-1. Click the left panel to upload an audio file
-2. Enter your 12-character passphrase:
-   - **Letters field**: 4 letters (a-z, A-Z)
-   - **Digits field**: 4 digits (0-9)
-   - **Special field**: 4 special characters (!@#$%^&*...)
-3. Click "Encrypt Audio" button
-4. Wait for encryption to complete (progress bar shows status)
-5. Download encrypted image in PNG, JPG, or JPEG format
-
-### Decrypting Audio
-
-1. Click the right panel to upload an encrypted image
-2. Enter your 12-character passphrase (same as encryption):
-   - **Letters field**: 4 letters
-   - **Digits field**: 4 digits
-   - **Special field**: 4 special characters
-3. Click "Decrypt Image" button
-4. Wait for decryption to complete (progress bar shows status)
-5. Listen to audio preview or download in MP3 or WAV format
-
-## File Size Examples
-
-### Compression Ratios
-
-| Original | Compressed | Reduction |
-|----------|-----------|-----------|
-| 90 MB | ~150 KB | 99.8% |
-| 50 MB | ~85 KB | 99.8% |
-| 10 MB | ~17 KB | 99.8% |
-| 1 MB | ~1.7 KB | 99.8% |
-
-## Security Best Practices
-
-### Creating Strong Passphrases
-
-✅ **Good Examples**:
-- Letters: `kxmq`, Digits: `7392`, Special: `*&%!` → `kxmq7392*&%!`
-- Letters: `tqmw`, Digits: `5739`, Special: `@!&*` → `tqmw5739@!&*`
-- Letters: `zxcv`, Digits: `9876`, Special: `#$%^` → `zxcv9876#$%^`
-
-❌ **Bad Examples**:
-- Sequential: `abcd1234!@#$` (predictable pattern)
-- Personal: `john1990!@#$` (uses name and birthdate)
-- Repeated: `aaaa1111####` (not random)
-
-### Usage Tips
-
-1. **Remember Your Passphrase**: Write it down securely or use a password manager
-2. **Use on Trusted Devices**: Only encrypt on computers you trust
-3. **Keep Browser Updated**: Security patches are important
-4. **Backup Encrypted Files**: Keep copies in secure locations
-5. **Verify File Sizes**: Check encrypted files match expected sizes
-
-## Available Commands
-
-```bash
-# Development
-pnpm dev              # Start dev server with hot reload
-pnpm check            # Check TypeScript errors
-pnpm format           # Format code with Prettier
-
-# Production
-pnpm build            # Create optimized production build
-pnpm start            # Run production server
-pnpm preview          # Preview production build locally
-```
-
-## Browser Compatibility
-
-- Chrome/Chromium 37+
-- Firefox 34+
-- Safari 11+
-- Edge 79+
-
-Requires support for:
-- Web Crypto API
-- Canvas API
-- FileReader API
-- Blob API
-
-## Performance Characteristics
-
-- **Encryption Speed**: ~10-20 MB/second (depends on CPU)
-- **Decryption Speed**: ~10-20 MB/second (depends on CPU)
-- **PBKDF2 Time**: ~100ms per operation (security feature)
-- **Compression Ratio**: ~90% reduction for typical audio
-
-## Limitations
-
-- **No Passphrase Recovery**: Lost passphrases cannot be recovered
-- **No Cloud Backup**: All processing is local
-- **Browser Dependent**: Security depends on browser implementation
-- **No Batch Operations**: Process one file at a time
-- **Memory Dependent**: Large files require sufficient RAM
-
-## File Size Limits
-
-- **Maximum Audio File**: 1GB
-- **Maximum Image File**: 1GB (RAM dependent)
-- **Recommended**: Files under 500MB for optimal performance
-
-## Troubleshooting
-
-### Decryption Failed
-- Verify your passphrase is correct (all 3 parts)
-- Ensure you're using the same passphrase as encryption
-- Try with a different encrypted image
-- Check browser console (F12) for error details
-
-### Slow Performance
-- Large files take longer to process (normal)
-- Close other applications to free up RAM
-- Use a modern browser for better performance
-- Try a smaller file first
-
-### File Size Unexpected
-- Encryption adds small overhead for salt/IV
-- Final size depends on audio content
-- Typical reduction is 90-99%
-
-## Project Structure
+## Folder Structure
 
 ```
 voxcrypt/
-├── client/src/
-│   ├── pages/Home.tsx           # Main UI with passphrase inputs
-│   ├── lib/encryption.ts        # Encryption/decryption logic
-│   ├── index.css               # Styles and animations
-│   └── components/             # Reusable components
-├── server/index.ts             # Express server
-├── README.md                   # This file
-├── SECURITY.md                 # Detailed security documentation
-├── SETUP_GUIDE.md              # Setup instructions
-└── package.json                # Dependencies
+|
++-- index.html                  Entry point HTML file
++-- vite.config.js              Vite build configuration
++-- package.json                Project dependencies and scripts
++-- README.md                   Project documentation
+|
++-- src/
+|   +-- main.jsx                React application bootstrap
+|   +-- App.jsx                 Root component containing all UI panels and logic
+|   +-- index.css               Global styles, layout, and component classes
+|   |
+|   +-- lib/
+|       +-- crypto.js           Encryption engine: compression, key derivation,
+|                               AES-GCM encrypt/decrypt, canvas pixel encoding
+|
++-- dist/                       Production build output generated by npm run build
+    +-- index.html
+    +-- assets/
+        +-- index-[hash].js
+        +-- index-[hash].css
 ```
 
-## Security Documentation
+---
 
-For detailed information about the security architecture, see **SECURITY.md**:
-- PBKDF2 key derivation details
-- AES-256-GCM encryption specifications
-- Compression algorithm explanation
-- Vague error message strategy
-- Best practices for users
-- Cryptographic standards compliance
+## Architecture
 
-## License
+VoxCrypt is a single-page application with no backend. The architecture is divided into two layers.
 
-MIT License - Free for personal and commercial use.
+### UI Layer
 
-## Support
+The UI layer is built with React and contains two independent panels: the Encrypt panel and the Decrypt panel. Each panel manages its own local state covering the selected file, passphrase fields, progress tracking, error messages, and result display. No global state management library is used.
 
-For issues or questions:
-1. Check the README.md and SECURITY.md documentation
-2. Review SETUP_GUIDE.md for setup help
-3. Check browser console (F12) for error messages
-4. Verify your passphrase format
+Components within the UI layer:
 
+- EncryptPanel handles file selection, output image format options, passphrase input, and triggers encryption
+- DecryptPanel handles image upload, passphrase input, the decryption trigger, output format selection, and media preview
+- DropZone is a reusable drag-and-drop file input component with cancel support
+- PassFields is a three-field passphrase input with per-field validation and show/hide toggle
+- FormatToggle is a reusable segmented button control used for format selection throughout the UI
 
+### Crypto Layer
 
-**Built with using React, Tailwind CSS, and Web Crypto API**
+The crypto layer is a pure utility module with no React dependency, located at `src/lib/crypto.js`. It exposes four public functions:
 
-**Security Level**: Enterprise-Grade  
->>>>>>> c3ceab7560f9eaa7416529f0abe78c1ede8775a3
+- `encryptAudioToImage(file, passphrase, onProgress)` runs the full encryption pipeline and returns a Canvas element
+- `decryptImageToAudio(imageFile, passphrase, onProgress)` runs the full decryption pipeline and returns raw bytes plus the original filename
+- `canvasToBlob(canvas, format)` converts the output canvas to a downloadable Blob
+- `validatePassphrase(letters, digits, special)` validates each passphrase component before any processing begins
+
+---
+
+## Encryption Process
+
+The following steps execute in sequence when the user clicks Encrypt.
+
+### Step 1 — Read File
+
+The selected media file is read into memory as a Uint8Array using the arrayBuffer API.
+
+### Step 2 — DEFLATE Compression
+
+The raw file bytes are passed through the browser native CompressionStream API using the deflate-raw algorithm. For typical audio files this achieves 70 to 99 percent size reduction depending on the codec. Already-compressed formats such as MP3 and MP4 will see less reduction than uncompressed formats such as WAV or raw PCM.
+
+### Step 3 — Generate Salt and IV
+
+A 16-byte random salt and a 12-byte random Initialization Vector (IV) are generated using `crypto.getRandomValues`. These values are unique per encryption session. Encrypting the same file twice with the same passphrase produces entirely different output each time.
+
+### Step 4 — PBKDF2 Key Derivation
+
+The 12-character passphrase is converted into a 256-bit AES key using PBKDF2 with the following parameters:
+
+- Hash function: SHA-256
+- Iterations: 100,000
+- Salt: the 16-byte random salt generated in Step 3
+- Output key length: 256 bits
+
+This step is intentionally designed to take approximately 100 to 300 milliseconds. The high iteration count makes brute-force and dictionary attacks computationally expensive.
+
+### Step 5 — AES-256-GCM Encryption
+
+The compressed data from Step 2 is encrypted using AES in Galois/Counter Mode (GCM) with the derived key and the 12-byte IV. GCM mode produces an authentication tag alongside the ciphertext. This tag enables the decryption step to detect any modification or corruption of the encrypted data before attempting to reconstruct the file.
+
+### Step 6 — Bundle Assembly
+
+The following components are packed into a single contiguous byte array in this order:
+
+```
+[ salt: 16 bytes ][ IV: 12 bytes ][ original filename: 60 bytes, null-padded ][ ciphertext ]
+```
+
+The filename is embedded so the decrypted file can be saved with its original name and extension. The file extension is also used during decryption to determine whether the content is audio or video, and to populate the output format options accordingly.
+
+### Step 7 — Pixel Encoding
+
+The assembled bundle is written into the RGB channels of an HTML5 Canvas element. Each pixel stores 3 bytes: one byte in the R channel, one in the G channel, and one in the B channel. The Alpha channel is always set to 255. An 8-byte length header is prepended to the bundle so the decoder knows exactly how many bytes to read back. The canvas dimensions are set to the square root of the total required pixel count, rounded up to the nearest integer.
+
+### Step 8 — Export as Image
+
+The canvas is exported as a PNG or JPG Blob based on the user's format selection and is downloaded to the user's device.
+
+---
+
+## Decryption Process
+
+The following steps execute in sequence when the user clicks Decrypt Image.
+
+### Step 1 — Load Image
+
+The uploaded image file is drawn onto an HTML5 Canvas element using a standard Image object. This grants the application access to raw pixel data through the getImageData API.
+
+### Step 2 — Pixel Extraction
+
+The RGB channel values are read sequentially from the canvas pixels. The first 8 bytes form the length header, which tells the decoder how many payload bytes follow. The remaining bytes are assembled back into the original bundle.
+
+### Step 3 — Bundle Unpacking
+
+The bundle is split back into its original components using fixed byte offsets:
+
+```
+Bytes  0 to 15   : salt (16 bytes)
+Bytes 16 to 27   : IV (12 bytes)
+Bytes 28 to 87   : original filename (60 bytes, decoded as UTF-8, null bytes stripped)
+Bytes 88 onward  : ciphertext
+```
+
+### Step 4 — PBKDF2 Key Derivation
+
+Using the extracted salt and the user-provided passphrase, the same PBKDF2 derivation is performed to reconstruct the 256-bit AES key. This step is deterministic: the same passphrase combined with the same salt always produces the same key.
+
+### Step 5 — AES-256-GCM Decryption
+
+The ciphertext is decrypted using the derived key and the extracted IV. GCM mode automatically verifies the authentication tag before returning any data. If the passphrase is wrong or the image has been tampered with, decryption fails and a generic error message is displayed. No information is revealed about which component of the passphrase was incorrect.
+
+### Step 6 — Decompression
+
+The decrypted bytes are passed through the browser native DecompressionStream API to reverse the DEFLATE compression and recover the original file bytes.
+
+### Step 7 — Output and Preview
+
+The recovered bytes are wrapped in a Blob with the appropriate MIME type based on the original file extension. The user selects an output format from the available options and can preview the media inline before downloading. The file content is byte-for-bit identical to the original. No transcoding occurs at any point, which means audio and video synchronization is fully preserved.
+
+---
+
+## Passphrase Format
+
+The passphrase is always exactly 12 characters, composed of three parts entered in separate input fields:
+
+| Field   | Length | Allowed Characters            | Example |
+|---------|--------|-------------------------------|---------|
+| Letters | 4      | a-z and A-Z only              | kxmq    |
+| Digits  | 4      | 0-9 only                      | 7391    |
+| Special | 4      | Any non-alphanumeric symbol   | @!*#    |
+
+The three parts are concatenated in order to form the full 12-character passphrase. Using the examples above, the full passphrase would be: `kxmq7391@!*#`
+
+The passphrase cannot be recovered or reset. If the passphrase is lost, the encrypted data cannot be decrypted under any circumstances.
+
+---
+
+## Security Design
+
+### Zero Server Storage
+
+No file data, passphrase, derived key, salt, or metadata ever leaves the browser. The application makes no network requests during encryption or decryption operations.
+
+### Authenticated Encryption
+
+AES-GCM mode provides authenticated encryption. Any modification to the encrypted image, even a single pixel value changed by one, will cause decryption to fail with an authentication error. This protects against both accidental corruption and deliberate tampering.
+
+### Unique Output Per Encryption
+
+Each encryption operation generates a fresh random salt and IV. Encrypting the same file twice with the same passphrase produces entirely different output images every time. This prevents statistical pattern analysis across multiple encrypted files.
+
+### Vague Error Messages
+
+When decryption fails for any reason, the error message is intentionally generic and does not indicate whether the passphrase was partially correct, which field contained an error, or what the correct value might be. This prevents information leakage that could assist an attacker.
+
+### Compression Before Encryption
+
+DEFLATE compression is applied before encryption rather than after. Compressing ciphertext is ineffective because encrypted data is statistically indistinguishable from random noise and cannot be compressed. Compressing the plaintext first also reduces the volume of data entering the encryption step, improving both performance and output image size.
+
+---
+
+## File Size and Limits
+
+The maximum supported input file size is 500 MB.
+
+This limit exists because all processing is performed in browser memory. A 500 MB file requires approximately 1.5 GB of available RAM during processing to hold the original data, compressed data, encrypted ciphertext, and canvas pixel buffer simultaneously. Files above 500 MB risk exhausting available tab memory and causing the browser to crash or terminate the page.
+
+The HTML5 Canvas API also imposes a maximum pixel count of approximately 268 megapixels (16384 x 16384 pixels on most browsers), which corresponds to a maximum storable payload of roughly 800 MB of raw bundle data. The 500 MB input limit is the practical safe threshold below that ceiling, accounting for encryption and header overhead.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js version 18 or higher
+- npm version 9 or higher
+
+### Installation and Setup
+
+```bash
+# Extract the project archive and navigate into the directory
+cd voxcrypt
+
+# Install all dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+Open a browser and navigate to `http://localhost:3000`.
+
+---
+
+## Available Scripts
+
+| Script            | Description                                        |
+|-------------------|----------------------------------------------------|
+| `npm run dev`     | Start the Vite development server with hot reload  |
+| `npm run build`   | Build the optimized production bundle into dist/   |
+| `npm run preview` | Serve the production build locally for testing     |
+
+---
+
+## Browser Compatibility
+
+VoxCrypt requires a modern browser with support for the following browser APIs:
+
+- Web Crypto API (PBKDF2 and AES-GCM)
+- CompressionStream and DecompressionStream
+- HTML5 Canvas API
+- FileReader and arrayBuffer API
+- Blob API
+
+| Browser           | Minimum Version |
+|-------------------|-----------------|
+| Chrome / Chromium | 80 or later     |
+| Firefox           | 80 or later     |
+| Safari            | 15.4 or later   |
+| Edge              | 80 or later     |
+
+---
+
+## Author
+
+Developed by Rocky Dewan.
+
+GitHub: https://github.com/Rocky-Dewan
