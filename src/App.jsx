@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { encryptAudioToImage, decryptImageToAudio, canvasToBlob, validatePassphrase, buildPassphrase } from './lib/crypto.js';
+import { encryptMediaToFile, decryptFileToMedia, validatePassphrase, buildPassphrase } from './lib/crypto.js';
 
 // ── LIMITS ───────────────────────────────────────────────────────
 const MAX_FILE_BYTES = 500 * 1024 * 1024; // 500 MB
@@ -247,7 +247,6 @@ function EncryptPanel() {
   const [digits,  setD]     = useState('');
   const [special, setS]     = useState('');
   const [show,    setShow]  = useState(false);
-  const [imgFmt,  setImgFmt]= useState('image/png');
   const [running, setRun]   = useState(false);
   const [pct,     setPct]   = useState(null);
   const [stage,   setStg]   = useState('');
@@ -285,21 +284,22 @@ function EncryptPanel() {
     setRun(true);
     try {
       const pp = buildPassphrase(letters, digits, special);
-      const res = await encryptAudioToImage(file, pp, ({ stage: s, pct: p }) => {
+      const res = await encryptMediaToFile(file, pp, ({ stage: s, pct: p }) => {
         setStg(s); setPct(p);
       });
-      const ext = imgFmt === 'image/png' ? '.png' : '.jpg';
-      const blob = await canvasToBlob(res.canvas, imgFmt);
-      const url = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(res.blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = file.name.replace(/\.[^.]+$/, '') + '_encrypted' + ext;
+      a.download = file.name.replace(/\.[^.]+$/, '') + '_encrypted' + res.ext;
       a.click();
       URL.revokeObjectURL(url);
+      const reduction = ((1 - res.outputSize / res.originalSize) * 100).toFixed(1);
       setStats({
         orig: fmtBytes(res.originalSize),
-        enc:  fmtBytes(blob.size),
-        saved: ((1 - blob.size / res.originalSize) * 100).toFixed(1) + '%',
+        enc:  fmtBytes(res.outputSize),
+        saved: reduction + '%',
+        fmt: res.ext === '.vxc' ? 'VXC' : 'PNG',
+        compressed: res.wasCompressed,
       });
     } catch (e) {
       setErr(e.message || 'Encryption failed.');
@@ -342,15 +342,6 @@ function EncryptPanel() {
           fileType={fileType}
         />
 
-        {/* Output image format */}
-        <FormatToggle
-          label="Output image format"
-          options={[['image/png','PNG'],['image/jpeg','JPG']]}
-          value={imgFmt}
-          onChange={setImgFmt}
-          color="blue"
-        />
-
         {/* Passphrase */}
         <PassFields
           letters={letters} digits={digits} special={special}
@@ -375,11 +366,15 @@ function EncryptPanel() {
           <div className="result-block">
             <div className="stat-row">
               <div className="stat-cell"><div className="stat-val">{stats.orig}</div><div className="stat-key">Original</div></div>
-              <div className="stat-cell"><div className="stat-val">{stats.enc}</div><div className="stat-key">Encrypted</div></div>
-              <div className="stat-cell"><div className="stat-val">{stats.saved}</div><div className="stat-key">Reduced</div></div>
+              <div className="stat-cell"><div className="stat-val">{stats.enc}</div><div className="stat-key">Output</div></div>
+              <div className="stat-cell"><div className="stat-val" style={{color: parseFloat(stats.saved) > 0 ? 'var(--green)' : 'var(--red)'}}>{stats.saved}</div><div className="stat-key">Reduced</div></div>
             </div>
             <div className="notif success" style={{ margin: 0 }}>
-              <Icon.check /><span>Encrypted image saved to your downloads.</span>
+              <Icon.check />
+              <span>
+                Saved as <strong>.{stats.fmt.toLowerCase()}</strong> file.
+                {stats.compressed ? ' Gzip compressed + AES-256-GCM encrypted.' : ' AES-256-GCM encrypted (media already compressed).'}
+              </span>
             </div>
           </div>
         )}
@@ -426,7 +421,7 @@ function DecryptPanel() {
     setRun(true);
     try {
       const pp = buildPassphrase(letters, digits, special);
-      const res = await decryptImageToAudio(imgFile, pp, ({ stage: s, pct: p }) => {
+      const res = await decryptFileToMedia(imgFile, pp, ({ stage: s, pct: p }) => {
         setStg(s); setPct(p);
       });
 
@@ -436,7 +431,7 @@ function DecryptPanel() {
       // Default output format = original format
       setOutFmt(origExt);
       setRecovered({
-        bytes: res.audioBytes,
+        bytes: res.mediaBytes,
         originalName: res.originalName,
         origExt,
         isVideo,
@@ -500,7 +495,7 @@ function DecryptPanel() {
           <div className="panel-icon purple"><Icon.unlock /></div>
           <div>
             <div className="panel-title">Image to Media</div>
-            <div className="panel-sub">Decrypt &amp; decompress</div>
+            <div className="panel-sub">Decrypt &amp; decompress (.vxc / PNG)</div>
           </div>
         </div>
       </div>
@@ -510,9 +505,9 @@ function DecryptPanel() {
           file={imgFile}
           onFile={(f) => { setImg(f); setErr(''); setRecovered(null); setOutFmt(null); }}
           onCancel={() => { setImg(null); setErr(''); setRecovered(null); setOutFmt(null); }}
-          accept="image/*,.png,.jpg,.jpeg"
-          label="Click to upload image"
-          sub="PNG, JPG, JPEG · Encrypted image"
+          accept=".vxc,.png,.jpg,.jpeg,image/*"
+          label="Click to upload encrypted file"
+          sub="VXC, PNG, JPG · Encrypted file"
           side="purple"
           fileType="image"
         />
@@ -629,7 +624,7 @@ export default function App() {
         <div className="footer-l">
           <Icon.shield />
           Secure client-side encryption. PBKDF2 + AES-256-GCM. No data stored on servers.
-          &nbsp;·&nbsp; Max file size: <strong style={{ color: 'var(--text-2)', marginLeft: 3 }}>500 MB</strong>
+          &nbsp;·&nbsp; Large files → .vxc binary container · Small files → PNG · Max: <strong style={{ color: 'var(--text-2)', marginLeft: 3 }}>500 MB</strong>
         </div>
         <div className="footer-r">
           Developed by&nbsp;
